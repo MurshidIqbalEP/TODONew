@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,useEffect  } from 'react'
 import './App.css'
 
 function App() {
@@ -6,6 +6,17 @@ function App() {
   const [tasks, setTasks] = useState([])
   const [editTodo,setEditTodo] = useState(null)
   const [newEditedTask, setEditedTask] = useState("")
+
+  useEffect(() => {
+    const storedTasks = JSON.parse(localStorage.getItem("tasks"));
+    if (storedTasks) {
+      setTasks(storedTasks);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   function handleChange(event){
      setNewTask(event.target.value)
@@ -98,7 +109,7 @@ function App() {
       alert("⚠️ Enter Something!");
     } else {
       const updatedTasks = tasks.map(item => {
-        if (item.text === editTodo.text) {
+        if (item.text === editTodo.text) { 
           return { ...item, text: newEditedTask };
         }
         return item;
@@ -106,9 +117,10 @@ function App() {
   
       setTasks(updatedTasks);
       setEditTodo(null);
-      setEditedTask(""); // assuming newEditedTask is a state setter function
+      setEditedTask(""); 
     }
   }
+  
   
 
   return (

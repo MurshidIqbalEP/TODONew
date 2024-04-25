@@ -4,6 +4,8 @@ import './App.css'
 function App() {
   const [newTask, setNewTask] = useState("")
   const [tasks, setTasks] = useState([])
+  const [editTodo,setEditTodo] = useState(null)
+  const [newEditedTask, setEditedTask] = useState("")
 
   function handleChange(event){
      setNewTask(event.target.value)
@@ -83,6 +85,32 @@ function App() {
     }
   }
 
+  function handleEdit(index){
+    setEditTodo(tasks[index])
+  }
+
+  function handleEditChange(event){
+    setEditedTask(event.target.value)
+  }
+
+  function updateTask() {
+    if (newEditedTask.trim() === "") {
+      alert("⚠️ Enter Something!");
+    } else {
+      const updatedTasks = tasks.map(item => {
+        if (item.text === editTodo.text) {
+          return { ...item, text: newEditedTask };
+        }
+        return item;
+      });
+  
+      setTasks(updatedTasks);
+      setEditTodo(null);
+      setEditedTask(""); // assuming newEditedTask is a state setter function
+    }
+  }
+  
+
   return (
     <>
     <div className='mainDiv'>
@@ -91,9 +119,11 @@ function App() {
        </div>
        <div className='form'>
             <form >
-              <input type="text"  className='inpt' placeholder='Enter your task...' value={newTask} onChange={handleChange}  onKeyPress={handleKeyPress}/>
+              {!editTodo ?  <input type="text"  className='inpt' placeholder='Enter your task...' value={newTask} onChange={handleChange}  onKeyPress={handleKeyPress}/> :
+                <input type="text"  className='inpt' placeholder={editTodo.text} value={newEditedTask} onChange={handleEditChange} />
+           }
             </form>
-            <button className='addbtn' onClick={addTask}>Add</button>
+           {!editTodo ?  <button className='addbtn' onClick={addTask}>Add</button>: <button className='addbtn' onClick={updateTask}>Update</button>}
 
         </div>
         
